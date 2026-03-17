@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nextfinance — Controle Financeiro Inteligente</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080808;--s1:#111;--s2:#181818;--s3:#222;
+  --border:#2a2a2a;--border2:#333;
+  --green:#00e676;--green2:#00c853;--green3:rgba(0,230,118,0.08);
+  --red:#ff1744;--yellow:#ffd740;--blue:#40c4ff;--purple:#e040fb;
+  --text:#f0f0f0;--muted:#777;--dim:#444;--radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px}
+
+.page{position:absolute;inset:0;display:flex;flex-direction:column;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .4s}
+.page.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;border-bottom:1px solid var(--border);flex-shrink:0;background:rgba(8,8,8,0.97);backdrop-filter:blur(20px);z-index:10}
+.tl{display:flex;align-items:center;gap:10px}
+.ib{background:none;border:1px solid var(--border);border-radius:9px;color:var(--muted);cursor:pointer;padding:6px 10px;font-size:13px;transition:all .2s;font-family:'DM Sans',sans-serif}
+.ib:hover{border-color:var(--green);color:var(--green)}
+.ttabs{display:flex;gap:20px}
+.ttabs a{text-decoration:none;color:var(--muted);font-size:13.5px;font-weight:500;cursor:pointer;padding-bottom:2px;border-bottom:2px solid transparent;transition:all .2s}
+.ttabs a.active{color:var(--text);font-weight:600;border-bottom-color:var(--green)}
+.lchip{display:flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--border);border-radius:999px;padding:5px 13px 5px 5px;cursor:pointer}
+.li{width:27px;height:27px;background:linear-gradient(135deg,#00e676,#1de9b6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:10px;color:#000}
+.lchip>span{font-size:12.5px;font-weight:600}
+
+/* NAV */
+.ntabs{display:flex;gap:5px;padding:13px 28px 0;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.ntabs::-webkit-scrollbar{display:none}
+.nt{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:'DM Sans',sans-serif}
+.nt:hover{border-color:var(--border2);color:var(--text)}
+.nt.on{background:var(--green);color:#000;border-color:var(--green);font-weight:700}
+.nt.add{border-color:var(--green);color:var(--green);font-weight:600}
+.nt.add:hover{background:var(--green3)}
+
+.rl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.cf{grid-column:1/-1}
+
+/* DASHBOARD */
+.db{flex:1;overflow-y:auto;padding:16px 28px 88px;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start}
+.db::-webkit-scrollbar{width:3px}
+.db::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+.hc{grid-column:1/-1;position:relative;overflow:hidden}
+.hc::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 0% 60%,rgba(0,230,118,0.05),transparent 55%);pointer-events:none}
+.hinner{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:start}
+.hh1{font-family:'Syne',sans-serif;font-size:25px;font-weight:700;color:var(--green);line-height:1.2;margin-bottom:11px}
+.hp{color:var(--muted);font-size:13px;line-height:1.65;max-width:370px}
+.zs{display:inline-flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:5px 11px;margin-top:11px;font-size:11px;color:var(--muted)}
+.zd{width:6px;height:6px;border-radius:50%;background:var(--yellow);animation:blink 2s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.mr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
+.mm{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:12px}
+.ml{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.mv{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text)}
+.mv.z{color:var(--dim)}
+
+.hs{display:flex;flex-direction:column;gap:7px;min-width:120px}
+.hst{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:9px 13px;text-align:right}
+.hsl{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:3px}
+.hsv{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--green)}
+
+/* rhythm */
+.rc{display:flex;flex-direction:column}
+.bn{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;line-height:1;margin:7px 0 5px;color:var(--dim)}
+.bn.hd{color:var(--text)}
+.zb{display:inline-flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--dim);margin-bottom:4px}
+.cw{flex:1;min-height:125px;margin-top:12px;position:relative}
+.nc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--dim)}
+.nc svg{opacity:.22}
+.nc span{font-size:11.5px}
+canvas#mc{width:100%!important}
+
+/* cats */
+.cl{margin-top:11px;display:flex;flex-direction:column;gap:7px}
+.ci{display:flex;align-items:center;gap:10px}
+.cd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cn{flex:1;font-size:12px;color:var(--muted)}
+.cbw{width:80px;height:3px;background:var(--s3);border-radius:4px;overflow:hidden}
+.cb{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.77,0,.18,1)}
+.cv{font-size:11.5px;font-weight:600;color:var(--muted);min-width:56px;text-align:right}
+.ndr{color:var(--dim);font-size:12px;text-align:center;padding:16px 0}
+
+/* summary */
+.sr{margin-top:11px;display:flex;flex-direction:column}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.srow:last-child{border-bottom:none}
+.sl{font-size:12px;color:var(--muted)}
+.sv{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:var(--dim)}
+.sv.pos{color:var(--green)}
+
+/* LANDING CARD */
+.lc{grid-column:1/-1;background:linear-gradient(135deg,rgba(0,230,118,0.04),transparent 60%),var(--s1);border:1px solid rgba(0,230,118,0.15);border-radius:var(--radius);padding:26px}
+.lt{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--text);margin-bottom:5px}
+.ls{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.feat{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:15px;transition:border-color .2s}
+.feat:hover{border-color:rgba(0,230,118,.3)}
+.fi{font-size:20px;margin-bottom:7px}
+.ft{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:3px}
+.fd{font-size:11px;color:var(--muted);line-height:1.55}
+
+/* testimonials */
+.tg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:11px}
+.te{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:13px}
+.tt{font-size:11.5px;color:var(--muted);line-height:1.6;font-style:italic;margin-bottom:9px}
+.ta{display:flex;align-items:center;gap:7px}
+.tav{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#000;flex-shrink:0}
+.tn{font-size:11px;font-weight:600;color:var(--text)}
+.tr{font-size:10px;color:var(--dim)}
+.stars{color:var(--yellow);font-size:10.5px;letter-spacing:1px;margin-bottom:5px}
+
+/* CTA strip */
+.cs{grid-column:1/-1;background:linear-gradient(90deg,rgba(0,230,118,0.08),rgba(29,233,182,0.06));border:1px solid rgba(0,230,118,0.2);border-radius:var(--radius);padding:18px 26px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.ct h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--text);margin-bottom:2px}
+.ct p{font-size:12px;color:var(--muted)}
+.cbs{display:flex;gap:8px;flex-wrap:wrap}
+.cp{background:var(--green);color:#000;border:none;border-radius:9px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap}
+.cp:hover{background:var(--green2);transform:scale(1.02)}
+.cse{background:none;color:var(--green);border:1px solid var(--green);border-radius:9px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap}
+.cse:hover{background:var(--green3)}
+
+/* BOTTOM BAR */
+.bb{display:flex;align-items:center;justify-content:space-between;padding:10px 28px;border-top:1px solid var(--border);position:absolute;bottom:0;left:0;right:0;background:rgba(8,8,8,0.97);backdrop-filter:blur(20px);z-index:10}
+.ar{display:flex;align-items:center;gap:7px}
+.aa{width:25px;height:25px;border-radius:50%;background:linear-gradient(135deg,var(--green),#1de9b6);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#000}
+.an{font-size:12px;color:var(--muted);font-weight:500}
+.ab{display:flex;align-items:center;gap:6px;background:var(--green);color:#000;border:none;border-radius:999px;padding:8px 17px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:transform .15s,background .15s}
+.ab:hover{background:var(--green2);transform:scale(1.03)}
+
+/* REGISTER PAGE */
+.rb{flex:1;overflow-y:auto;padding:20px 28px 88px}
+.rb::-webkit-scrollbar{width:3px}
+.rb::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+.rh{margin-bottom:22px}
+.rh h2{font-family:'Syne',sans-serif;font-size:23px;font-weight:800;color:var(--text);margin-bottom:4px}
+.rh p{color:var(--muted);font-size:13px}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+
+.fc{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:17px;transition:border-color .2s}
+.fc:hover{border-color:var(--border2)}
+.fc.full{grid-column:1/-1}
+.flab{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fi2{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:15px;font-family:'Syne',sans-serif;font-weight:600;padding:10px 12px;outline:none;transition:border-color .2s}
+.fi2:focus{border-color:var(--green)}
+.fi2::placeholder{color:var(--dim);font-weight:400;font-family:'DM Sans',sans-serif;font-size:13px}
+.fsel{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;padding:10px 12px;outline:none;cursor:pointer;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+.fsel:focus{border-color:var(--green)}
+.fsel option{background:var(--s2)}
+
+.fbs{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+.fb{padding:6px 12px;border-radius:7px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-size:11.5px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.fb:hover{border-color:var(--border2);color:var(--text)}
+.fb.on{background:var(--green3);border-color:var(--green);color:var(--green)}
+
+/* calc */
+.calcs{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:17px;margin-top:11px;position:relative;overflow:hidden}
+.calcs::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 10%,rgba(0,230,118,0.05),transparent 55%);pointer-events:none}
+.calct{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:6px}
+.ci2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px}
+.cw2{display:flex;flex-direction:column;gap:5px}
+.cl2{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.cin{background:var(--s2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:15px;font-family:'Syne',sans-serif;font-weight:600;padding:10px 11px;outline:none;width:100%;transition:border-color .2s}
+.cin:focus{border-color:var(--green)}
+.cin::placeholder{color:var(--dim);font-weight:400;font-family:'DM Sans',sans-serif;font-size:12.5px}
+.cr{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:13px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.cri{text-align:center}
+.crl{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.crv{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--green)}
+.crv.z{color:var(--dim)}
+.crv.w{color:var(--yellow)}
+.crv.d{color:var(--red)}
+
+/* expense */
+.el{margin-top:11px;display:flex;flex-direction:column;gap:6px}
+.ei{display:flex;align-items:center;gap:10px;background:var(--s1);border:1px solid var(--border);border-radius:11px;padding:10px 14px;transition:border-color .2s;animation:si .3s ease}
+@keyframes si{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.ei:hover{border-color:var(--border2)}
+.edot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.einfo{flex:1}
+.ename{font-size:13.5px;font-weight:600;color:var(--text)}
+.emeta{font-size:10.5px;color:var(--muted);margin-top:1px}
+.eval{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text)}
+.emon{font-size:10.5px;color:var(--muted);text-align:right}
+.edel{background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;padding:4px;transition:color .2s;line-height:1}
+.edel:hover{color:var(--red)}
+
+.aeb{width:100%;background:var(--green3);border:1px dashed var(--green);border-radius:11px;color:var(--green);font-size:13px;font-weight:600;padding:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;margin-top:9px;display:flex;align-items:center;justify-content:center;gap:7px}
+.aeb:hover{background:rgba(0,230,118,.14)}
+
+.sa{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.clrb{background:none;border:1px solid var(--border);border-radius:9px;color:var(--muted);padding:8px 18px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.clrb:hover{border-color:var(--border2);color:var(--text)}
+.savb{background:var(--green);border:none;border-radius:9px;color:#000;padding:8px 24px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;gap:6px}
+.savb:hover{background:var(--green2);transform:scale(1.02)}
+
+.stitle{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin:16px 0 8px;display:flex;align-items:center;justify-content:space-between}
+.scnt{background:var(--s2);border:1px solid var(--border);border-radius:999px;padding:1px 8px;font-size:10.5px;color:var(--muted)}
+.es{text-align:center;padding:32px 20px;color:var(--dim)}
+.es .ei2{font-size:34px;margin-bottom:9px;opacity:.35}
+.es p{font-size:12px}
+
+.tipb{background:linear-gradient(90deg,rgba(0,230,118,0.07),transparent);border:1px solid rgba(0,230,118,0.15);border-radius:11px;padding:11px 15px;margin-bottom:15px;display:flex;align-items:center;gap:9px}
+.tipb p{font-size:12px;color:var(--muted);line-height:1.5}
+.tipb strong{color:var(--green)}
+
+/* TOAST */
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--green);color:#000;font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:999px;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ══════ DASHBOARD ══════ -->
+<div class="page" id="pageDash">
+  <div class="topbar">
+    <div class="tl">
+      <button class="ib">←</button>
+      <button class="ib">☰</button>
+    </div>
+    <div class="ttabs">
+      <a onclick="goTo('pageLanding')">Chat</a>
+      <a class="active">Vision</a>
+    </div>
+    <div class="lchip">
+      <div class="li">NF</div>
+      <span>Nextfinance</span>
+      <span style="color:var(--muted);font-size:11px">▾</span>
+    </div>
+  </div>
+
+  <div class="ntabs">
+    <button class="nt on">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Visão geral
+    </button>
+    <button class="nt" onclick="goTo('pageReg')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+      Transações
+    </button>
+    <button class="nt">Parcelamentos</button>
+    <button class="nt">Assinaturas</button>
+    <button class="nt">Categorias</button>
+    <button class="nt">Cartões</button>
+    <button class="nt">Investimentos</button>
+    <button class="nt add" onclick="goTo('pageReg')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Cadastrar gasto
+    </button>
+  </div>
+
+  <div class="db">
+    <!-- HERO -->
+    <div class="card hc">
+      <div class="hinner">
+        <div>
+          <h1 class="hh1">Seu dinheiro está te esperando para uma conversa.</h1>
+          <p class="hp" id="heroMsg">Nenhum gasto cadastrado ainda. Adicione seus gastos para começar sua análise financeira inteligente.</p>
+          <div class="zs"><span class="zd"></span>Aguardando dados — cadastre seus gastos</div>
+          <div class="mr">
+            <div class="mm"><div class="ml">Gasto no mês</div><div class="mv z" id="mTotal">R$ 0,00</div></div>
+            <div class="mm"><div class="ml">vs. Mês Anterior</div><div class="mv z" id="mVs">—</div></div>
+            <div class="mm"><div class="ml">Maior Gasto</div><div class="mv z" id="mMaior">—</div></div>
+          </div>
+        </div>
+        <div class="hs">
+          <div class="hst"><div class="hsl">Usuários ativos</div><div class="hsv">+12.400</div></div>
+          <div class="hst"><div class="hsl">Economizado</div><div class="hsv">R$2.3M</div></div>
+          <div class="hst"><div class="hsl">Avaliação</div><div class="hsv">⭐ 4.9</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RHYTHM -->
+    <div class="card rc">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="rl">Ritmo de Gastos</span>
+        <a style="font-size:11px;color:var(--green);cursor:pointer">ver todas ↗</a>
+      </div>
+      <div class="bn" id="bigNum">R$ 0,00</div>
+      <div class="zb" id="zeroB">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Sem gastos cadastrados
+      </div>
+      <div class="cw">
+        <canvas id="mc" height="125"></canvas>
+        <div class="nc" id="nc">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>Nenhum dado para exibir</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)"><div style="width:14px;height:2px;background:var(--green);border-radius:2px"></div>Mês atual</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)"><div style="width:14px;height:2px;background:#333;border-radius:2px"></div>Mês passado</div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="card">
+      <div class="rl">Gastos por Categoria</div>
+      <div class="cl" id="catList"><div class="ndr">Nenhuma categoria ainda</div></div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="card">
+      <div class="rl">Resumo Mensal</div>
+      <div class="sr">
+        <div class="srow"><span class="sl">Total de gastos</span><span class="sv z" id="sTotal">R$ 0,00</span></div>
+        <div class="srow"><span class="sl">Média por dia</span><span class="sv z" id="sAvg">R$ 0,00</span></div>
+        <div class="srow"><span class="sl">Maior gasto único</span><span class="sv z" id="sMaior">R$ 0,00</span></div>
+        <div class="srow"><span class="sl">Nº de lançamentos</span><span class="sv z" id="sQtd">0</span></div>
+        <div class="srow"><span class="sl">Projeção anual</span><span class="sv z" id="sAnual">R$ 0,00</span></div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="lc">
+      <div class="lt">Por que escolher o Nextfinance?</div>
+      <div class="ls">A plataforma mais inteligente do Brasil para controlar finanças pessoais. Sem planilhas, sem mensalidade escondida.</div>
+      <div class="fg">
+        <div class="feat"><div class="fi">🧠</div><div class="ft">IA Financeira</div><div class="fd">Análise automática dos seus padrões com recomendações personalizadas para economizar mais todo mês.</div></div>
+        <div class="feat"><div class="fi">📊</div><div class="ft">Relatórios em tempo real</div><div class="fd">Gráficos e métricas atualizados instantaneamente. Veja com clareza onde seu dinheiro vai.</div></div>
+        <div class="feat"><div class="fi">🔔</div><div class="ft">Alertas inteligentes</div><div class="fd">Notificações quando você se aproxima do limite de categoria. Evite surpresas no fim do mês.</div></div>
+        <div class="feat"><div class="fi">🔒</div><div class="ft">100% Seguro</div><div class="fd">Criptografia padrão bancário AES-256. Seus dados nunca são compartilhados com terceiros.</div></div>
+        <div class="feat"><div class="fi">📱</div><div class="ft">Multiplataforma</div><div class="fd">Acesse do celular, tablet ou computador. Sincronização automática entre todos os dispositivos.</div></div>
+        <div class="feat"><div class="fi">🎯</div><div class="ft">Metas financeiras</div><div class="fd">Defina objetivos e acompanhe seu progresso rumo à liberdade financeira.</div></div>
+      </div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div class="card cf">
+      <div class="rl">O que nossos usuários dizem</div>
+      <div class="tg">
+        <div class="te"><div class="stars">★★★★★</div><div class="tt">"Finalmente um app que me faz entender para onde meu dinheiro vai. Economizei R$ 800 no primeiro mês!"</div><div class="ta"><div class="tav" style="background:linear-gradient(135deg,#00e676,#1de9b6)">A</div><div><div class="tn">Ana Costa</div><div class="tr">Designer · São Paulo</div></div></div></div>
+        <div class="te"><div class="stars">★★★★★</div><div class="tt">"A calculadora de gastos mensais é incrível. Descobri que pagava R$ 340/mês em assinaturas que nem usava."</div><div class="ta"><div class="tav" style="background:linear-gradient(135deg,#40c4ff,#7c4dff)">M</div><div><div class="tn">Marcos Silva</div><div class="tr">Dev · Belo Horizonte</div></div></div></div>
+        <div class="te"><div class="stars">★★★★★</div><div class="tt">"Interface linda e simples. Em 5 minutos já tinha cadastrado todos os gastos da família. Recomendo muito!"</div><div class="ta"><div class="tav" style="background:linear-gradient(135deg,#ffd740,#ff6d00)">J</div><div><div class="tn">Juliana Ramos</div><div class="tr">Professora · Curitiba</div></div></div></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cs">
+      <div class="ct"><h3>Comece a controlar suas finanças agora</h3><p>Grátis para sempre no plano básico. Sem cartão necessário.</p></div>
+      <div class="cbs">
+        <button class="cp" onclick="goTo('pageReg')">Cadastrar meu primeiro gasto</button>
+        <button class="cse" onclick="goTo('pageLanding')">Saiba mais</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bb">
+    <div class="ar"><div class="aa">N</div><span class="an">Nextfinance</span></div>
+    <div style="font-size:11px;color:var(--dim)">Controle financeiro inteligente 🇧🇷</div>
+    <button class="ab" onclick="goTo('pageReg')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Cadastrar gasto
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════ REGISTER ══════ -->
+<div class="page hidden" id="pageReg">
+  <div class="topbar">
+    <div class="tl"><button class="ib" onclick="goTo('pageDash')">← Voltar</button></div>
+    <div class="ttabs"><a onclick="goTo('pageDash')">Visão geral</a><a class="active">Cadastrar</a></div>
+    <div class="lchip"><div class="li">NF</div><span>Nextfinance</span><span style="color:var(--muted);font-size:11px">▾</span></div>
+  </div>
+
+  <div class="rb">
+    <div class="tipb">
+      <span style="font-size:17px">💡</span>
+      <p>Preencha o <strong>nome</strong>, <strong>valor</strong> e escolha a <strong>frequência</strong> — a calculadora atualiza o impacto mensal automaticamente em tempo real!</p>
+    </div>
+
+    <div class="rh"><h2>Cadastrar Gasto</h2><p>Registre suas despesas e veja o impacto real no seu orçamento.</p></div>
+
+    <div class="rg">
+      <div class="fc">
+        <div class="flab">✏️ Nome do gasto</div>
+        <input class="fi2" id="fName" type="text" placeholder="Ex: Netflix, Aluguel, Academia...">
+      </div>
+      <div class="fc">
+        <div class="flab">🏷️ Categoria</div>
+        <select class="fsel" id="fCat">
+          <option value="">Selecione...</option>
+          <option value="Moradia">🏠 Moradia</option>
+          <option value="Alimentação">🍔 Alimentação</option>
+          <option value="Transporte">🚗 Transporte</option>
+          <option value="Saúde">💊 Saúde</option>
+          <option value="Lazer">🎬 Lazer</option>
+          <option value="Educação">📚 Educação</option>
+          <option value="Assinaturas">📱 Assinaturas</option>
+          <option value="Outros">📦 Outros</option>
+        </select>
+      </div>
+      <div class="fc">
+        <div class="flab">💰 Valor (R$)</div>
+        <input class="fi2" id="fVal" type="number" step="0.01" min="0" placeholder="0,00" oninput="calcM()">
+      </div>
+      <div class="fc">
+        <div class="flab">🔄 Parcelas</div>
+        <input class="fi2" id="fParc" type="number" min="1" max="360" placeholder="1 (à vista)" oninput="calcM()">
+      </div>
+      <div class="fc full">
+        <div class="flab">📅 Frequência de pagamento</div>
+        <div class="fbs">
+          <button class="fb" data-f="1" onclick="setF(this,'1')">Diário</button>
+          <button class="fb" data-f="7" onclick="setF(this,'7')">Semanal</button>
+          <button class="fb" data-f="15" onclick="setF(this,'15')">Quinzenal</button>
+          <button class="fb on" data-f="30" onclick="setF(this,'30')">Mensal</button>
+          <button class="fb" data-f="90" onclick="setF(this,'90')">Trimestral</button>
+          <button class="fb" data-f="365" onclick="setF(this,'365')">Anual</button>
+        </div>
+      </div>
+      <div class="fc full">
+        <div class="flab">📝 Observação (opcional)</div>
+        <input class="fi2" id="fObs" type="text" placeholder="Detalhes adicionais..." style="font-family:'DM Sans',sans-serif;font-weight:400;font-size:13px">
+      </div>
+    </div>
+
+    <!-- CALCULATOR -->
+    <div class="calcs">
+      <div class="calct">🧮 Calculadora de Impacto Mensal</div>
+      <div class="ci2">
+        <div class="cw2">
+          <div class="cl2">Valor base (R$)</div>
+          <input class="cin" id="cVal" type="number" step="0.01" placeholder="R$ 0,00" oninput="syncC()">
+        </div>
+        <div class="cw2">
+          <div class="cl2">Intervalo em dias</div>
+          <input class="cin" id="cDays" type="number" placeholder="30" value="30" oninput="calcM()">
+        </div>
+      </div>
+      <div class="cr">
+        <div class="cri"><div class="crl">Por semana</div><div class="crv z" id="crW">R$ 0</div></div>
+        <div class="cri"><div class="crl">Por mês</div><div class="crv z" id="crM">R$ 0</div></div>
+        <div class="cri"><div class="crl">Por ano</div><div class="crv z" id="crY">R$ 0</div></div>
+        <div class="cri"><div class="crl">Total parcelas</div><div class="crv z" id="crT">R$ 0</div></div>
+      </div>
+    </div>
+
+    <button class="aeb" onclick="addExp()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Adicionar à lista de gastos
+    </button>
+
+    <div class="stitle">Gastos cadastrados<span class="scnt" id="expCnt">0</span></div>
+    <div class="el" id="expList">
+      <div class="es"><div class="ei2">💸</div><p>Nenhum gasto adicionado ainda</p></div>
+    </div>
+
+    <div class="calcs" style="margin-top:11px">
+      <div class="calct">📊 Resumo Total</div>
+      <div class="cr" style="grid-template-columns:repeat(3,1fr)">
+        <div class="cri"><div class="crl">Total/mês</div><div class="crv z" id="tM">R$ 0</div></div>
+        <div class="cri"><div class="crl">Total/ano</div><div class="crv z" id="tY">R$ 0</div></div>
+        <div class="cri"><div class="crl">Lançamentos</div><div class="crv z" id="tQ">0</div></div>
+      </div>
+    </div>
+
+    <div class="sa">
+      <button class="clrb" onclick="clrForm()">Limpar campos</button>
+      <button class="savb" onclick="saveDash()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Salvar e ver painel
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════ LANDING PAGE ══════ -->
+<div class="page hidden" id="pageLanding">
+  <div class="topbar">
+    <div class="tl"><button class="ib" onclick="goTo('pageDash')">← Voltar</button></div>
+    <div class="ttabs"><a class="active">Chat</a><a onclick="goTo('pageDash')">Vision</a></div>
+    <div class="lchip"><div class="li">NF</div><span>Nextfinance</span><span style="color:var(--muted);font-size:11px">▾</span></div>
+  </div>
+
+  <div style="flex:1;overflow-y:auto;padding:32px 28px 88px">
+
+    <div style="text-align:center;padding:44px 20px 38px;position:relative">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:var(--s2);border:1px solid rgba(0,230,118,.2);border-radius:999px;padding:5px 14px;margin-bottom:18px;font-size:11px;color:var(--green);font-weight:600">
+        <span class="zd"></span> Nova versão disponível — v2.0
+      </div>
+      <h1 style="font-family:'Syne',sans-serif;font-size:44px;font-weight:800;line-height:1.1;margin-bottom:16px">
+        Controle financeiro<br><span style="color:var(--green)">que funciona de verdade.</span>
+      </h1>
+      <p style="font-size:14.5px;color:var(--muted);max-width:460px;margin:0 auto 28px;line-height:1.7">
+        Nextfinance é a plataforma que transforma seus dados financeiros em decisões claras. Sem complicação, sem planilha, sem desculpa.
+      </p>
+      <div style="display:flex;gap:11px;justify-content:center;flex-wrap:wrap">
+        <button onclick="goTo('pageReg')" style="background:var(--green);color:#000;border:none;border-radius:11px;padding:13px 30px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Começar agora — é grátis</button>
+        <button onclick="goTo('pageDash')" style="background:none;color:var(--text);border:1px solid var(--border2);border-radius:11px;padding:13px 26px;font-size:14.5px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Ver demonstração</button>
+      </div>
+      <div style="display:flex;gap:26px;justify-content:center;margin-top:30px;flex-wrap:wrap">
+        <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--green)">12.400+</div><div style="font-size:11px;color:var(--muted)">usuários ativos</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--green)">R$2.3M</div><div style="font-size:11px;color:var(--muted)">economizados</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--green)">4.9★</div><div style="font-size:11px;color:var(--muted)">avaliação média</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--green)">100%</div><div style="font-size:11px;color:var(--muted)">grátis no básico</div></div>
+      </div>
+    </div>
+
+    <!-- COMO FUNCIONA -->
+    <div style="margin-bottom:44px">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px">Como funciona</div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text)">Simples assim — 3 passos</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div style="background:var(--s1);border:1px solid var(--border);border-radius:15px;padding:22px;text-align:center">
+          <div style="width:46px;height:46px;background:var(--green3);border:1px solid rgba(0,230,118,.3);border-radius:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 13px;font-size:20px">📝</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:6px;color:var(--text)">1. Cadastre</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6">Adicione gastos com nome, valor e frequência em menos de 30 segundos.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid rgba(0,230,118,.2);border-radius:15px;padding:22px;text-align:center">
+          <div style="width:46px;height:46px;background:var(--green3);border:1px solid rgba(0,230,118,.3);border-radius:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 13px;font-size:20px">🧮</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:6px;color:var(--green)">2. Calcule</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6">A IA calcula automaticamente o impacto mensal, anual e por parcelas.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--border);border-radius:15px;padding:22px;text-align:center">
+          <div style="width:46px;height:46px;background:var(--green3);border:1px solid rgba(0,230,118,.3);border-radius:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 13px;font-size:20px">📊</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:6px;color:var(--text)">3. Analise</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6">Veja gráficos e projeções no painel. Tome decisões financeiras mais inteligentes.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div style="max-width:620px;margin:0 auto 44px">
+      <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;margin-bottom:18px">Perguntas frequentes</h2>
+      <div id="faqList"></div>
+    </div>
+
+    <!-- FINAL CTA -->
+    <div style="background:linear-gradient(135deg,rgba(0,230,118,0.08),rgba(29,233,182,0.05));border:1px solid rgba(0,230,118,0.2);border-radius:18px;padding:36px;text-align:center">
+      <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);margin-bottom:9px">Pronto para assumir o controle?</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:22px">Junte-se a mais de 12.000 brasileiros que já controlam suas finanças com o Nextfinance.</p>
+      <button onclick="goTo('pageReg')" style="background:var(--green);color:#000;border:none;border-radius:11px;padding:13px 38px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:transform .2s" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+        Cadastrar meu primeiro gasto →
+      </button>
+    </div>
+  </div>
+
+  <div class="bb">
+    <div class="ar"><div class="aa">N</div><span class="an">Nextfinance</span></div>
+    <div style="font-size:11px;color:var(--dim)">© 2025 Nextfinance · Todos os direitos reservados</div>
+    <button class="ab" onclick="goTo('pageReg')">Começar agora</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- WEBCHAT NEXTAGS -->
+<script>
+  window.addEventListener('load', function() {
+    var s = document.createElement('script');
+    s.src = 'https://app.nextagsai.com.br/webchat/plugin.js?v=6';
+    s.onload = function() {
+      ktt10.setup({id:"UXQgLTXtQ1BskKelnu", accountId:"1576247", color:"#36D6B5"});
+    };
+    document.body.appendChild(s);
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+let expenses=[], curFreq=30, chartI=null;
+const CC={'Moradia':'#40c4ff','Alimentação':'#ffd740','Transporte':'#ff6d00','Saúde':'#00e676','Lazer':'#e040fb','Educação':'#1de9b6','Assinaturas':'#ff1744','Outros':'#ffab40'};
+const FB=['#00e676','#40c4ff','#ffd740','#e040fb','#ff6d00','#ff1744','#1de9b6','#ffab40'];
+
+function goTo(id){document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+
+function setF(btn,d){document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');curFreq=parseInt(d);document.getElementById('cDays').value=d;calcM()}
+
+function syncC(){document.getElementById('fVal').value=document.getElementById('cVal').value||'';calcM()}
+
+function calcM(){
+  const val=parseFloat(document.getElementById('fVal').value||document.getElementById('cVal').value)||0;
+  const parc=parseInt(document.getElementById('fParc').value)||1;
+  const days=parseInt(document.getElementById('cDays').value)||curFreq||30;
+  if(!document.getElementById('cVal').value)document.getElementById('cVal').value=document.getElementById('fVal').value||'';
+  const pm=days>0?(val/days)*30:0;
+  const pw=days>0?(val/days)*7:0;
+  const py=days>0?(val/days)*365:0;
+  const tot=val*parc;
+  const f=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const c=(id,v)=>{const el=document.getElementById(id);el.textContent=f(v);el.className='crv'+(v===0?' z':v>2000?' d':v>800?' w':'')};
+  c('crW',pw);c('crM',pm);c('crY',py);c('crT',tot);
+}
+
+function addExp(){
+  const name=document.getElementById('fName').value.trim();
+  const cat=document.getElementById('fCat').value;
+  const val=parseFloat(document.getElementById('fVal').value)||0;
+  const parc=parseInt(document.getElementById('fParc').value)||1;
+  const obs=document.getElementById('fObs').value.trim();
+  const days=parseInt(document.getElementById('cDays').value)||curFreq||30;
+  if(!name||val<=0){toast('⚠️ Preencha nome e valor!');return}
+  const monthly=(val/days)*30;
+  expenses.push({id:Date.now(),name,cat:cat||'Outros',val,parc,days,monthly,obs,color:CC[cat]||FB[expenses.length%FB.length]});
+  renderList();updTotals();clrForm();toast('✓ Gasto adicionado!');
+}
+
+function renderList(){
+  const list=document.getElementById('expList');
+  document.getElementById('expCnt').textContent=expenses.length;
+  if(!expenses.length){list.innerHTML='<div class="es"><div class="ei2">💸</div><p>Nenhum gasto adicionado ainda</p></div>';return}
+  list.innerHTML=expenses.map((e,i)=>`
+    <div class="ei">
+      <div class="edot" style="background:${e.color}"></div>
+      <div class="einfo">
+        <div class="ename">${e.name}</div>
+        <div class="emeta">${e.cat}${e.obs?' · '+e.obs:''} · a cada ${e.days}d${e.parc>1?' · '+e.parc+'x':''}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="eval">${e.val.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>
+        <div class="emon">${e.monthly.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}/mês</div>
+      </div>
+      <button class="edel" onclick="delExp(${i})">✕</button>
+    </div>`).join('');
+}
+
+function delExp(i){expenses.splice(i,1);renderList();updTotals()}
+
+function updTotals(){
+  const tm=expenses.reduce((a,e)=>a+e.monthly,0);
+  const f=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const s=(id,v,n)=>{const el=document.getElementById(id);el.textContent=n?v:f(v);el.className='crv'+(v===0?' z':'')};
+  s('tM',tm);s('tY',tm*12);s('tQ',expenses.length,true);
+}
+
+function clrForm(){
+  ['fName','fVal','fParc','fObs','cVal'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fCat').value='';
+  document.getElementById('cDays').value='30';
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));
+  document.querySelector('[data-f="30"]').classList.add('on');
+  curFreq=30;
+  ['crW','crM','crY','crT'].forEach(id=>{const el=document.getElementById(id);el.textContent='R$ 0';el.className='crv z'});
+}
+
+function saveDash(){updDash();goTo('pageDash');toast('✓ Painel atualizado!')}
+
+function updDash(){
+  const total=expenses.reduce((a,e)=>a+e.monthly,0);
+  const f=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const se=(id,v,cls)=>{const el=document.getElementById(id);el.textContent=v;if(cls)el.className=cls};
+  se('mTotal',f(total),total>0?'mv pos':'mv z');
+  se('bigNum',f(total),total>0?'bn hd':'bn');
+  se('sTotal',f(total),total>0?'sv pos':'sv z');
+  se('sAvg',f(total/30),total>0?'sv':'sv z');
+  se('sQtd',expenses.length,expenses.length>0?'sv':'sv z');
+  se('sAnual',f(total*12),total>0?'sv pos':'sv z');
+  if(expenses.length>0){
+    const big=expenses.reduce((a,b)=>b.val>a.val?b:a);
+    se('mMaior',big.name,'mv');se('sMaior',f(big.val),'sv');
+    document.getElementById('heroMsg').textContent=`Você tem ${expenses.length} gasto(s) cadastrado(s) com impacto mensal de ${f(total)}.`;
+    document.getElementById('zeroB').style.display='none';
+  }
+  renderCats(total);renderChart(total);
+}
+
+function renderCats(total){
+  const m={};expenses.forEach(e=>{m[e.cat]=(m[e.cat]||0)+e.monthly});
+  const s=Object.entries(m).sort((a,b)=>b[1]-a[1]);
+  const el=document.getElementById('catList');
+  if(!s.length){el.innerHTML='<div class="ndr">Nenhuma categoria ainda</div>';return}
+  el.innerHTML=s.map(([cat,val])=>{
+    const pct=total>0?(val/total*100).toFixed(0):0;const color=CC[cat]||'#888';
+    return`<div class="ci"><div class="cd" style="background:${color}"></div><div class="cn">${cat}</div><div class="cbw"><div class="cb" style="width:${pct}%;background:${color}"></div></div><div class="cv">${val.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div>`;
+  }).join('');
+}
+
+function renderChart(total){
+  const noC=document.getElementById('nc'),cv=document.getElementById('mc');
+  if(!expenses.length){noC.style.display='flex';cv.style.display='none';return}
+  noC.style.display='none';cv.style.display='block';
+  const today=new Date().getDate();
+  const cur=Array.from({length:31},(_,i)=>{const d=i+1;return d>today?null:total*(d/30)});
+  const past=Array.from({length:31},(_,i)=>total*0.7*((i+1)/31));
+  if(chartI)chartI.destroy();
+  chartI=new Chart(cv.getContext('2d'),{type:'line',data:{labels:Array.from({length:31},(_,i)=>i+1),datasets:[
+    {data:cur,borderColor:'#00e676',borderWidth:2.5,fill:false,tension:0.4,pointRadius:c=>c.dataIndex===today-1?5:0,pointBackgroundColor:'#00e676',spanGaps:false},
+    {data:past,borderColor:'#333',borderWidth:1.5,borderDash:[4,4],fill:false,tension:0.4,pointRadius:0}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1a',borderColor:'#333',borderWidth:1,callbacks:{label:c=>c.raw!=null?' R$ '+c.raw.toLocaleString('pt-BR',{minimumFractionDigits:2}):''}}},scales:{x:{grid:{color:'#181818'},ticks:{color:'#444',font:{size:10},callback:(v,i)=>[0,14,24,30].includes(i)?i+1:''}},y:{grid:{color:'#181818'},ticks:{color:'#444',font:{size:10},callback:v=>v>=1000?'R$'+(v/1000).toFixed(0)+'k':'R$'+v},min:0}}}});
+}
+
+// FAQ
+const faqs=[
+  {q:'O Nextfinance é gratuito?',a:'Sim! O plano básico é 100% gratuito e inclui cadastro ilimitado de gastos, calculadora mensal e painel de análise. Planos premium com funcionalidades avançadas estão disponíveis por R$ 14,90/mês.'},
+  {q:'Meus dados financeiros são seguros?',a:'Absolutamente. Utilizamos criptografia AES-256, o mesmo padrão dos maiores bancos do Brasil. Seus dados nunca são compartilhados com terceiros.'},
+  {q:'Funciona em celular e computador?',a:'Sim! O Nextfinance é totalmente responsivo e funciona perfeitamente em qualquer dispositivo. Em breve também teremos app nativo para iOS e Android.'},
+  {q:'Como funciona a calculadora de impacto mensal?',a:'Você informa o valor e a frequência do gasto e a calculadora converte automaticamente para o custo mensal, semanal, anual e total de parcelas — tudo em tempo real.'},
+  {q:'Posso cancelar quando quiser?',a:'Sim, sem fidelidade e sem burocracia. Cancele com 1 clique a qualquer momento, direto pelo painel.'},
+];
+document.getElementById('faqList').innerHTML=faqs.map((f,i)=>`
+  <div style="background:var(--s1);border:1px solid var(--border);border-radius:11px;margin-bottom:7px;overflow:hidden">
+    <button onclick="tFaq(${i})" style="width:100%;text-align:left;background:none;border:none;color:var(--text);padding:14px 17px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;justify-content:space-between;align-items:center">
+      ${f.q}<span id="fi${i}" style="color:var(--green);font-size:16px">+</span>
+    </button>
+    <div id="fb${i}" style="max-height:0;overflow:hidden;transition:max-height .3s ease">
+      <div style="padding:0 17px 14px;font-size:12px;color:var(--muted);line-height:1.65">${f.a}</div>
+    </div>
+  </div>`).join('');
+
+function tFaq(i){
+  const b=document.getElementById('fb'+i),ic=document.getElementById('fi'+i);
+  const open=!b.style.maxHeight||b.style.maxHeight==='0px';
+  b.style.maxHeight=open?'200px':'0px';ic.textContent=open?'−':'+';
+}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+
+clrForm();
+</script>
+</body>
+</html>
