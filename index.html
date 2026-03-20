@@ -17,8 +17,89 @@
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px}
 
+/* ═══════════════════════════════════════════
+   RESPONSIVE — Mobile-first breakpoints
+   ═══════════════════════════════════════════ */
+@media(max-width:600px){
+  /* Fix root overflow for mobile */
+  html,body{overflow:auto}
+  .page{position:relative;inset:auto;min-height:100vh}
+  .page.hidden{display:none;transform:none;opacity:1;pointer-events:auto}
+
+  /* Topbar */
+  .topbar{padding:10px 14px;gap:8px}
+  .ttabs{gap:12px}
+  .ttabs a{font-size:12px}
+  .lchip>span:first-of-type{display:none}
+  .lchip{padding:5px 10px 5px 5px}
+
+  /* Nav tabs */
+  .ntabs{padding:10px 14px 0;gap:4px}
+  .nt{padding:6px 11px;font-size:11px}
+
+  /* Dashboard grid → single column */
+  .db{padding:12px 14px 100px;grid-template-columns:1fr;gap:10px}
+  .cf{grid-column:1}
+
+  /* Hero card */
+  .hh1{font-size:17px}
+  .hp{font-size:12px;max-width:100%}
+  .mr{grid-template-columns:1fr 1fr!important;gap:6px}
+  .mr .mm:last-child{grid-column:1/-1}
+  .mr{grid-template-columns:1fr 1fr;gap:6px}
+  .mv{font-size:15px}
+
+  /* Features grid → 2 cols on mobile */
+  .fg{grid-template-columns:1fr 1fr;gap:8px}
+  .ft{font-size:11.5px}
+  .fd{font-size:10.5px}
+
+  /* Testimonials → single col */
+  .tg{grid-template-columns:1fr;gap:8px}
+
+  /* CTA strip */
+  .cs{flex-direction:column;align-items:flex-start;padding:16px}
+  .cbs{width:100%}
+  .cp,.cse{width:100%;text-align:center;padding:11px 12px}
+
+  /* Bottom bar */
+  .bb{padding:8px 14px;flex-wrap:wrap;gap:6px}
+  .an{display:none}
+  .bb>div:nth-child(2){display:none}
+  .ab{font-size:12px;padding:7px 14px}
+
+  /* Register page */
+  .rb{padding:14px 14px 100px}
+  .rg{grid-template-columns:1fr}
+  .fc.full{grid-column:1}
+  .rh h2{font-size:19px}
+  .ci2{grid-template-columns:1fr}
+  .cr{grid-template-columns:repeat(2,1fr);gap:8px}
+
+  /* Calc results */
+  .calcs{padding:14px}
+
+  /* Landing page */
+  #pageLanding .topbar .ttabs a{font-size:12px}
+}
+
+@media(min-width:601px) and (max-width:900px){
+  /* Tablet */
+  .topbar{padding:11px 18px}
+  .db{padding:14px 18px 100px;gap:11px}
+  .hh1{font-size:21px}
+  .fg{grid-template-columns:repeat(3,1fr)}
+  .tg{grid-template-columns:1fr 1fr;gap:9px}
+  .cs{flex-direction:column;align-items:flex-start}
+  .cbs{width:100%}
+  .cp,.cse{flex:1}
+  .rb{padding:16px 18px 100px}
+  .cr{grid-template-columns:repeat(2,1fr)}
+}
+
 .page{position:absolute;inset:0;display:flex;flex-direction:column;transition:transform .5s cubic-bezier(.77,0,.18,1),opacity .4s}
 .page.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
+/* Mobile page visibility handled via @media rules below */
 
 /* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;border-bottom:1px solid var(--border);flex-shrink:0;background:rgba(8,8,8,0.97);backdrop-filter:blur(20px);z-index:10}
@@ -53,12 +134,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .hc{grid-column:1/-1;position:relative;overflow:hidden}
 .hc::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 0% 60%,rgba(0,230,118,0.05),transparent 55%);pointer-events:none}
 .hinner{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:start}
-.hh1{font-family:'Syne',sans-serif;font-size:25px;font-weight:700;color:var(--green);line-height:1.2;margin-bottom:11px}
+.hh1{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--green);line-height:1.25;margin-bottom:8px}
 .hp{color:var(--muted);font-size:13px;line-height:1.65;max-width:370px}
 .zs{display:inline-flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:5px 11px;margin-top:11px;font-size:11px;color:var(--muted)}
 .zd{width:6px;height:6px;border-radius:50%;background:var(--yellow);animation:blink 2s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.mr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
+.mr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
 .mm{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:12px}
 .ml{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
 .mv{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text)}
@@ -217,6 +298,120 @@ canvas#mc{width:100%!important}
 /* TOAST */
 .toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--green);color:#000;font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:999px;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ═══════════════════════════════════════════
+   LANDING PAGE — Responsive CSS Classes
+   ═══════════════════════════════════════════ */
+.lp-scroll{flex:1;overflow-y:auto;padding:32px 28px 88px}
+.lp-scroll::-webkit-scrollbar{width:3px}
+.lp-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* Hero */
+.lp-hero{text-align:center;padding:44px 20px 38px;position:relative}
+.lp-badge{display:inline-flex;align-items:center;gap:6px;background:var(--s2);border:1px solid rgba(0,230,118,.2);border-radius:999px;padding:5px 14px;margin-bottom:18px;font-size:11px;color:var(--green);font-weight:600}
+.lp-h1{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;line-height:1.1;margin-bottom:16px}
+.lp-sub{font-size:14.5px;color:var(--muted);max-width:460px;margin:0 auto 28px;line-height:1.7}
+.lp-btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+.lp-btn-primary{background:var(--green);color:#000;border:none;border-radius:11px;padding:13px 30px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:transform .2s}
+.lp-btn-primary:hover{transform:scale(1.03)}
+.lp-btn-sec{background:none;color:var(--text);border:1px solid var(--border2);border-radius:11px;padding:13px 26px;font-size:14.5px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.lp-btn-sec:hover{border-color:var(--green);color:var(--green)}
+.lp-stats{display:flex;gap:26px;justify-content:center;margin-top:30px;flex-wrap:wrap;align-items:center}
+.lp-stat{text-align:center}
+.lp-stat-v{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--green)}
+.lp-stat-l{font-size:11px;color:var(--muted)}
+.lp-div{width:1px;height:32px;background:var(--border)}
+
+/* How it works */
+.lp-section{margin-bottom:44px}
+.lp-sec-head{text-align:center;margin-bottom:24px}
+.lp-sec-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.lp-sec-h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text)}
+.lp-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.lp-step{background:var(--s1);border:1px solid var(--border);border-radius:15px;padding:22px;text-align:center}
+.lp-step-hl{border-color:rgba(0,230,118,.2)}
+.lp-step-icon{width:46px;height:46px;background:var(--green3);border:1px solid rgba(0,230,118,.3);border-radius:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 13px;font-size:20px}
+.lp-step-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:6px;color:var(--text)}
+.lp-step-title-green{color:var(--green)!important}
+.lp-step-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* FAQ */
+.lp-faq{max-width:620px;margin:0 auto 44px}
+.lp-faq-h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;margin-bottom:18px}
+
+/* Final CTA */
+.lp-cta-final{background:linear-gradient(135deg,rgba(0,230,118,0.08),rgba(29,233,182,0.05));border:1px solid rgba(0,230,118,0.2);border-radius:18px;padding:36px;text-align:center}
+.lp-cta-h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);margin-bottom:9px}
+.lp-cta-p{font-size:13px;color:var(--muted);margin-bottom:22px}
+.lp-cta-btn{background:var(--green);color:#000;border:none;border-radius:11px;padding:13px 38px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:transform .2s}
+
+/* ═══ LANDING PAGE MOBILE OVERRIDES ═══ */
+@media(max-width:600px){
+  .lp-scroll{padding:20px 14px 100px}
+  .lp-hero{padding:28px 0 24px}
+  .lp-h1{font-size:28px}
+  .lp-sub{font-size:13px;margin-bottom:20px}
+  .lp-btns{flex-direction:column;gap:8px}
+  .lp-btn-primary,.lp-btn-sec{width:100%;text-align:center;padding:13px 16px;font-size:14px}
+  .lp-stats{gap:14px;margin-top:22px}
+  .lp-div{display:none}
+  .lp-stat-v{font-size:20px}
+  .lp-steps{grid-template-columns:1fr;gap:10px}
+  .lp-step{padding:16px}
+  .lp-faq{padding:0}
+  .lp-cta-final{padding:22px 16px;border-radius:14px}
+  .lp-cta-h2{font-size:20px}
+  .lp-cta-btn{width:100%;padding:13px}
+  .lp-sec-h2{font-size:20px}
+}
+@media(min-width:601px) and (max-width:900px){
+  .lp-scroll{padding:24px 18px 100px}
+  .lp-h1{font-size:36px}
+  .lp-steps{grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .lp-div{display:none}
+  .lp-stats{gap:16px}
+}
+
+
+/* ═══ CATEGORIES PAGE ═══ */
+.cat-summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:4px}
+.cat-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:16px;transition:border-color .2s;cursor:default}
+.cat-card:hover{border-color:var(--border2)}
+.cat-card-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.cat-dot-lg{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.cat-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
+.cat-count{font-size:10.5px;color:var(--muted);margin-left:auto}
+.cat-value{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:3px}
+.cat-monthly{font-size:10.5px;color:var(--muted);margin-bottom:10px}
+.cat-bar-bg{height:4px;background:var(--s3);border-radius:4px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.77,0,.18,1)}
+.cat-pct{font-size:10px;color:var(--muted);text-align:right;margin-top:4px}
+
+.cat-chart-wrap{position:relative;min-height:200px;display:flex;align-items:center;justify-content:center}
+.cat-chart-wrap canvas{max-width:100%}
+
+.cat-detail-group{background:var(--s1);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
+.cat-detail-header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.cat-detail-header:hover{background:var(--s2)}
+.cat-detail-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cat-detail-name{flex:1;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
+.cat-detail-total{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--green)}
+.cat-detail-arrow{font-size:11px;color:var(--muted);transition:transform .2s}
+.cat-detail-arrow.open{transform:rotate(180deg)}
+.cat-detail-items{overflow:hidden;max-height:0;transition:max-height .3s ease}
+.cat-detail-items.open{max-height:800px}
+.cat-detail-item{display:flex;align-items:center;gap:10px;padding:9px 14px 9px 30px;border-bottom:1px solid var(--border)}
+.cat-detail-item:last-child{border-bottom:none}
+.cat-detail-item-name{flex:1;font-size:12.5px;color:var(--muted)}
+.cat-detail-item-freq{font-size:10.5px;color:var(--dim)}
+.cat-detail-item-val{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;color:var(--text)}
+
+@media(max-width:600px){
+  .cat-summary-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .cat-value{font-size:18px}
+  .cat-chart-wrap{min-height:160px}
+}
+
 </style>
 </head>
 <body>
@@ -240,20 +435,19 @@ canvas#mc{width:100%!important}
   </div>
 
   <div class="ntabs">
-    <button class="nt on">
+    <button class="nt on" id="tabDash" onclick="switchTab('pageDash','tabDash')">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       Visão geral
     </button>
-    <button class="nt" onclick="goTo('pageReg')">
+    <button class="nt" id="tabReg" onclick="switchTab('pageReg','tabReg')">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
       Transações
     </button>
-    <button class="nt">Parcelamentos</button>
-    <button class="nt">Assinaturas</button>
-    <button class="nt">Categorias</button>
-    <button class="nt">Cartões</button>
-    <button class="nt">Investimentos</button>
-    <button class="nt add" onclick="goTo('pageReg')">
+    <button class="nt" id="tabCat" onclick="switchTab('pageCat','tabCat')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M4.22 4.22l2.12 2.12m11.32 11.32 2.12 2.12M2 12h3m14 0h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+      Categorias
+    </button>
+    <button class="nt add" onclick="switchTab('pageReg','tabReg')">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Cadastrar gasto
     </button>
@@ -262,22 +456,13 @@ canvas#mc{width:100%!important}
   <div class="db">
     <!-- HERO -->
     <div class="card hc">
-      <div class="hinner">
-        <div>
-          <h1 class="hh1">Seu dinheiro está te esperando para uma conversa.</h1>
-          <p class="hp" id="heroMsg">Nenhum gasto cadastrado ainda. Adicione seus gastos para começar sua análise financeira inteligente.</p>
-          <div class="zs"><span class="zd"></span>Aguardando dados — cadastre seus gastos</div>
-          <div class="mr">
-            <div class="mm"><div class="ml">Gasto no mês</div><div class="mv z" id="mTotal">R$ 0,00</div></div>
-            <div class="mm"><div class="ml">vs. Mês Anterior</div><div class="mv z" id="mVs">—</div></div>
-            <div class="mm"><div class="ml">Maior Gasto</div><div class="mv z" id="mMaior">—</div></div>
-          </div>
-        </div>
-        <div class="hs">
-          <div class="hst"><div class="hsl">Usuários ativos</div><div class="hsv">+12.400</div></div>
-          <div class="hst"><div class="hsl">Economizado</div><div class="hsv">R$2.3M</div></div>
-          <div class="hst"><div class="hsl">Avaliação</div><div class="hsv">⭐ 4.9</div></div>
-        </div>
+      <h1 class="hh1">Visão geral dos seus gastos mensais.</h1>
+      <p class="hp" id="heroMsg">Nenhum gasto cadastrado ainda. Adicione seus gastos para começar sua análise financeira inteligente.</p>
+      <div class="zs"><span class="zd"></span>Aguardando dados — cadastre seus gastos</div>
+      <div class="mr">
+        <div class="mm"><div class="ml">Gasto no mês</div><div class="mv z" id="mTotal">R$ 0,00</div></div>
+        <div class="mm"><div class="ml">vs. Mês Anterior</div><div class="mv z" id="mVs">—</div></div>
+        <div class="mm"><div class="ml">Maior Gasto</div><div class="mv z" id="mMaior">—</div></div>
       </div>
     </div>
 
@@ -371,8 +556,8 @@ canvas#mc{width:100%!important}
 <!-- ══════ REGISTER ══════ -->
 <div class="page hidden" id="pageReg">
   <div class="topbar">
-    <div class="tl"><button class="ib" onclick="goTo('pageDash')">← Voltar</button></div>
-    <div class="ttabs"><a onclick="goTo('pageDash')">Visão geral</a><a class="active">Cadastrar</a></div>
+    <div class="tl"><button class="ib" onclick="switchTab('pageDash','tabDash')">← Voltar</button></div>
+    <div class="ttabs"><a onclick="switchTab('pageDash','tabDash')">Visão geral</a><a onclick="switchTab('pageCat','tabCat')">Categorias</a><a class="active">Cadastrar</a></div>
     <div class="lchip"><div class="li">NF</div><span>Nextfinance</span><span style="color:var(--muted);font-size:11px">▾</span></div>
   </div>
 
@@ -479,10 +664,68 @@ canvas#mc{width:100%!important}
 </div>
 
 
+
+<!-- ══════ CATEGORIAS ══════ -->
+<div class="page hidden" id="pageCat">
+  <div class="topbar">
+    <div class="tl">
+      <button class="ib" onclick="switchTab('pageDash','tabDash')">← Voltar</button>
+    </div>
+    <div class="ttabs">
+      <a onclick="switchTab('pageDash','tabDash')">Visão geral</a>
+      <a onclick="switchTab('pageReg','tabReg')">Cadastrar</a>
+      <a class="active">Categorias</a>
+    </div>
+    <div class="lchip"><div class="li">NF</div><span>Nextfinance</span><span style="color:var(--muted);font-size:11px">▾</span></div>
+  </div>
+
+  <div class="rb">
+    <div class="rh">
+      <h2>Categorias</h2>
+      <p>Veja e gerencie seus gastos organizados por categoria.</p>
+    </div>
+
+    <!-- Resumo por categoria -->
+    <div class="cat-summary-grid" id="catSummaryGrid">
+      <div class="es"><div class="ei2">🏷️</div><p>Nenhum gasto cadastrado ainda</p></div>
+    </div>
+
+    <!-- Donut chart -->
+    <div class="calcs" style="margin-top:14px">
+      <div class="calct">📊 Distribuição de Gastos</div>
+      <div class="cat-chart-wrap">
+        <canvas id="catChart" height="200"></canvas>
+        <div class="nc" id="catChartEmpty">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          <span>Adicione gastos para ver o gráfico</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista detalhada por categoria -->
+    <div class="stitle" style="margin-top:18px">
+      Gastos por categoria
+      <span class="scnt" id="catTotalBadge">R$ 0</span>
+    </div>
+    <div id="catDetailList">
+      <div class="es"><div class="ei2">💸</div><p>Nenhum gasto ainda</p></div>
+    </div>
+  </div>
+
+  <div class="bb">
+    <div class="ar"><div class="aa">N</div><span class="an">Nextfinance</span></div>
+    <div style="font-size:11px;color:var(--dim)">Categorias de gastos</div>
+    <button class="ab" onclick="switchTab('pageReg','tabReg')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Cadastrar gasto
+    </button>
+  </div>
+</div>
+
 <!-- ══════ LANDING PAGE ══════ -->
 <div class="page hidden" id="pageLanding">
   <div class="topbar">
-    <div class="tl"><button class="ib" onclick="goTo('pageDash')">← Voltar</button></div>
+    <div class="tl"><button class="ib" onclick="switchTab('pageDash','tabDash')">← Voltar</button></div>
     <div class="ttabs"><a class="active">Chat</a><a onclick="goTo('pageDash')">Vision</a></div>
     <div class="lchip"><div class="li">NF</div><span>Nextfinance</span><span style="color:var(--muted);font-size:11px">▾</span></div>
   </div>
@@ -583,7 +826,120 @@ let expenses=[], curFreq=30, chartI=null;
 const CC={'Moradia':'#40c4ff','Alimentação':'#ffd740','Transporte':'#ff6d00','Saúde':'#00e676','Lazer':'#e040fb','Educação':'#1de9b6','Assinaturas':'#ff1744','Outros':'#ffab40'};
 const FB=['#00e676','#40c4ff','#ffd740','#e040fb','#ff6d00','#ff1744','#1de9b6','#ffab40'];
 
-function goTo(id){document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+function goTo(id){
+  const isMobile = window.innerWidth <= 600;
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.add('hidden');
+    if(isMobile) p.style.display='none';
+  });
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  if(isMobile){ el.style.display='flex'; window.scrollTo(0,0); }
+}
+
+function switchTab(pageId, tabId){
+  // Navigate to page
+  goTo(pageId);
+  // Update tab active state
+  document.querySelectorAll('.nt').forEach(b=>b.classList.remove('on'));
+  if(tabId){ const t=document.getElementById(tabId); if(t) t.classList.add('on'); }
+  // If switching to categories, render it
+  if(pageId==='pageCat') renderCatPage();
+}
+
+let catChartI = null;
+
+function renderCatPage(){
+  const f=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  // Group by category
+  const groups={};
+  expenses.forEach(e=>{
+    if(!groups[e.cat]) groups[e.cat]={name:e.cat,color:CC[e.cat]||'#888',items:[],total:0};
+    groups[e.cat].items.push(e);
+    groups[e.cat].total+=e.monthly;
+  });
+  const cats=Object.values(groups).sort((a,b)=>b.total-a.total);
+  const grandTotal=cats.reduce((s,c)=>s+c.total,0);
+
+  // Badge
+  document.getElementById('catTotalBadge').textContent=f(grandTotal);
+
+  // Summary cards grid
+  const grid=document.getElementById('catSummaryGrid');
+  if(!cats.length){
+    grid.innerHTML='<div class="es" style="grid-column:1/-1"><div class="ei2">🏷️</div><p>Nenhum gasto cadastrado ainda</p></div>';
+  } else {
+    grid.innerHTML=cats.map(c=>{
+      const pct=grandTotal>0?((c.total/grandTotal)*100).toFixed(0):0;
+      return `<div class="cat-card">
+        <div class="cat-card-top">
+          <div class="cat-dot-lg" style="background:${c.color}"></div>
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-count">${c.items.length} gasto${c.items.length!==1?'s':''}</div>
+        </div>
+        <div class="cat-value">${f(c.total)}</div>
+        <div class="cat-monthly">${pct}% do total</div>
+        <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${pct}%;background:${c.color}"></div></div>
+        <div class="cat-pct">${pct}%</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Donut chart
+  const emptyEl=document.getElementById('catChartEmpty');
+  const cvEl=document.getElementById('catChart');
+  if(!cats.length){
+    emptyEl.style.display='flex'; cvEl.style.display='none';
+  } else {
+    emptyEl.style.display='none'; cvEl.style.display='block';
+    if(catChartI) catChartI.destroy();
+    catChartI=new Chart(cvEl.getContext('2d'),{
+      type:'doughnut',
+      data:{
+        labels:cats.map(c=>c.name),
+        datasets:[{data:cats.map(c=>c.total),backgroundColor:cats.map(c=>c.color),borderColor:'#111',borderWidth:3,hoverOffset:6}]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,cutout:'65%',
+        plugins:{
+          legend:{display:true,position:'right',labels:{color:'#777',font:{size:11},boxWidth:10,padding:12}},
+          tooltip:{backgroundColor:'#1a1a1a',borderColor:'#333',borderWidth:1,callbacks:{label:c=>` ${f(c.raw)}`}}
+        }
+      }
+    });
+  }
+
+  // Detailed list (collapsible per category)
+  const detList=document.getElementById('catDetailList');
+  if(!cats.length){
+    detList.innerHTML='<div class="es"><div class="ei2">💸</div><p>Nenhum gasto ainda</p></div>';
+    return;
+  }
+  detList.innerHTML=cats.map((c,gi)=>{
+    const items=c.items.map(e=>`
+      <div class="cat-detail-item">
+        <div class="cat-detail-item-name">${e.name}</div>
+        <div class="cat-detail-item-freq">a cada ${e.days}d</div>
+        <div class="cat-detail-item-val">${f(e.monthly)}/mês</div>
+      </div>`).join('');
+    return `<div class="cat-detail-group">
+      <div class="cat-detail-header" onclick="toggleCatGroup(${gi})">
+        <div class="cat-detail-dot" style="background:${c.color}"></div>
+        <div class="cat-detail-name">${c.name}</div>
+        <div class="cat-detail-total">${f(c.total)}/mês</div>
+        <span class="cat-detail-arrow" id="catArr${gi}">▾</span>
+      </div>
+      <div class="cat-detail-items" id="catItems${gi}">${items}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCatGroup(i){
+  const el=document.getElementById('catItems'+i);
+  const arr=document.getElementById('catArr'+i);
+  const open=el.classList.toggle('open');
+  arr.classList.toggle('open',open);
+}
 
 function setF(btn,d){document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');curFreq=parseInt(d);document.getElementById('cDays').value=d;calcM()}
 
@@ -654,7 +1010,7 @@ function clrForm(){
   ['crW','crM','crY','crT'].forEach(id=>{const el=document.getElementById(id);el.textContent='R$ 0';el.className='crv z'});
 }
 
-function saveDash(){updDash();goTo('pageDash');toast('✓ Painel atualizado!')}
+function saveDash(){updDash();switchTab('pageDash','tabDash');toast('✓ Painel atualizado!')}
 
 function updDash(){
   const total=expenses.reduce((a,e)=>a+e.monthly,0);
